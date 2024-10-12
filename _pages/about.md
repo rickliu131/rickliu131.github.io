@@ -1,6 +1,6 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
 
 profile:
@@ -16,5 +16,8 @@ news: true # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
-Hi there! I am a senior undergrad at the [University of Michigan](https://cse.engin.umich.edu/) studying Computer Science. I'm fortunate to work at the Human-AI Lab under the supervision of Prof. [Anhong Guo](https://guoanhong.com).
+Hi there!
+
+I am a senior undergrad at the [University of Michigan](https://cse.engin.umich.edu/) studying Computer Science. I'm fortunate to work at the Human-AI Lab under the supervision of Prof. [Anhong Guo](https://guoanhong.com).
+
 My research interests lie in developing interactive Human-AI systems that enhance accessibility.
