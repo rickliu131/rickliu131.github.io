@@ -8,8 +8,8 @@ profile:
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p style="text-align: center;"><a href="https://www.linkedin.com/in/yuxuanliu1/">LinkedIn</a></p><br>
     <p style="text-align: center;"><a href="https://x.com/yuxuanliu21"><img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="Twitter" style="width: 20px; height: 20px; vertical-align: middle;"/>X/Twitter</a></p><br>
+    <p style="text-align: center;"><a href="https://www.linkedin.com/in/yuxuanliu1/">LinkedIn</a></p><br>
     <p style="text-align: center;"><a href="mailto:liurick@umich.edu">Email</a></p></p><br>
 
 news: true # includes a list of news items
