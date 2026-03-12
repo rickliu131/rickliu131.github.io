@@ -1,4 +1,9 @@
 source 'https://rubygems.org'
+# Required on Ruby 3.4+ (removed from stdlib; needed by various plugins)
+gem 'benchmark'  # activesupport / google-scholar-citations
+gem 'observer'   # citeproc-ruby / jekyll-scholar
+gem 'ostruct'    # jekyll-twitter-plugin
+
 group :jekyll_plugins do
     gem 'classifier-reborn'
     gem 'jekyll'

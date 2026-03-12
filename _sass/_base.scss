@@ -196,13 +196,45 @@ ul.task-list input[type="checkbox"] {
   width: 100%;
 
   .more-info {
-    margin-bottom: 5px;
-    margin-top: 5px;
-    font-family: monospace;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
 
-    p {
-      display: inline-block;
+    .profile-links {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 1rem;
+      list-style: none;
+      padding: 0;
       margin: 0;
+    }
+
+    .profile-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--global-text-color);
+      text-decoration: none;
+      font-size: 1.25rem;
+      transition: color 0.2s ease-in-out;
+
+      i {
+        width: 1.1em;
+        text-align: center;
+        flex-shrink: 0;
+
+        &::before {
+          color: var(--global-text-color);
+          transition: color 0.2s ease-in-out;
+        }
+      }
+
+      &:hover {
+        color: var(--global-theme-color);
+
+        i::before {
+          color: var(--global-theme-color);
+        }
+      }
     }
   }
 }

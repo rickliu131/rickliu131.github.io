@@ -8,11 +8,13 @@ profile:
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p style="text-align: center;"><a href="https://x.com/yuxuanliu21"><img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="Twitter" style="width: 20px; height: 20px; vertical-align: middle;"/>X/Twitter</a></p><br>
-    <p style="text-align: center;"><a href="https://www.linkedin.com/in/yuxuanliu1/">LinkedIn</a></p><br>
-    <p style="text-align: center;"><a href="mailto:liurick@umich.edu">Email</a></p></p><br>
+    <div class="profile-links">
+      <a href="https://x.com/yuxuanliu21" class="profile-link" title="X / Twitter" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="https://www.linkedin.com/in/yuxuanliu1/" class="profile-link" title="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="mailto:liurick@umich.edu" class="profile-link" title="Email"><i class="fa-solid fa-envelope"></i></a>
+    </div>
 
-news: true # includes a list of news items
+news: false # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
