@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Collected responses</title>
+  <script>if (location.protocol === "http:" && !["localhost", "127.0.0.1"].includes(location.hostname)) location.replace("https:" + location.href.slice(5));</script>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./data.js"></script>
+</head>
+<body>
+  <main class="complete" id="collected-data" aria-busy="true">
+    <h1>Collected responses</h1>
+    <p id="summary" role="status">Loading responses…</p>
+    <div class="completion-actions">
+      <button class="secondary" id="refresh" disabled>Loading…</button>
+      <button id="export" disabled>Export CSV</button>
+    </div>
+    <p class="error" id="error" role="alert" hidden></p>
+    <div id="responses"></div>
+    <p class="note" id="csv-note" hidden>The CSV also includes dataset reference labels and session start/completion timestamps.</p>
+  </main>
+  <noscript><p>Enable JavaScript to view collected responses.</p></noscript>
+  <footer><a href="./">Back to labeling</a></footer>
+</body>
+</html>
