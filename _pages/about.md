@@ -21,4 +21,6 @@ social: false # includes social icons at the bottom of the page
 ---
 Hi!
 
-I am a first-year PhD student at [UM CSE](https://cse.engin.umich.edu/), working on HCI and accessibility. I am fortunate to be advised by Prof. [Anhong Guo](https://guoanhong.com).
+I am a second-year PhD student at [Michigan CSE](https://cse.engin.umich.edu/), advised by [Anhong Guo](https://guoanhong.com/).
+
+I study human–computer interaction (HCI) and accessibility. In particular, I’m interested in developing systems and techniques that empower people with diverse access needs to engage fully with the digital world.
