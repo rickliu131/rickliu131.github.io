@@ -19,8 +19,6 @@ news: false # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
-Hi!
-
 I am a second-year PhD student at [Michigan CSE](https://cse.engin.umich.edu/), advised by [Anhong Guo](https://guoanhong.com/).
 
 I study human–computer interaction (HCI) and accessibility. In particular, I’m interested in developing systems and techniques that empower people with diverse access needs to engage fully with the digital world.
