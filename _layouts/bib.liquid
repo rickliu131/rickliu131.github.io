@@ -176,6 +176,13 @@
       {{ entry.note | strip }}
     </div>
 
+    {% if entry.award_name and entry.award == blank %}
+      <div class="publication-award">
+        <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+        <span>{{ entry.award_name | escape }}</span>
+      </div>
+    {% endif %}
+
     <!-- Links/Buttons -->
     <div class="links">
       {% if entry.award %}
@@ -184,7 +191,13 @@
         </a>
       {% endif %}
       {% if entry.abstract %}
-        <a class="abstract btn btn-sm z-depth-0" role="button" aria-expanded="false">Abs</a>
+        <button
+          type="button"
+          class="abstract btn btn-sm z-depth-0"
+          aria-expanded="false"
+          aria-controls="{{ entry.key }}-abstract"
+          aria-label="Abstract for {{ entry.title | escape }}"
+        >Abstract</button>
       {% endif %}
       {% if entry.arxiv %}
         <a href="http://arxiv.org/abs/{{ entry.arxiv }}" class="btn btn-sm z-depth-0" role="button">arXiv</a>
@@ -194,9 +207,9 @@
       {% endif %}
       {% if entry.html %}
         {% if entry.html contains '://' %}
-          <a href="{{ entry.html }}" class="btn btn-sm z-depth-0" role="button">HTML</a>
+          <a href="{{ entry.html }}" class="btn btn-sm z-depth-0" aria-label="HTML for {{ entry.title | escape }}">HTML</a>
         {% else %}
-          <a href="{{ entry.html | prepend: '/assets/html/' | relative_url }}" class="btn btn-sm z-depth-0" role="button">HTML</a>
+          <a href="{{ entry.html | prepend: '/assets/html/' | relative_url }}" class="btn btn-sm z-depth-0" aria-label="HTML for {{ entry.title | escape }}">HTML</a>
         {% endif %}
       {% endif %}
       {% if entry.pdf %}
@@ -336,7 +349,7 @@
 
     {% if entry.abstract %}
       <!-- Hidden abstract block -->
-      <div class="abstract hidden" aria-hidden="true">
+      <div id="{{ entry.key }}-abstract" class="abstract hidden" aria-hidden="true">
         <p>{{ entry.abstract }}</p>
       </div>
     {% endif %}

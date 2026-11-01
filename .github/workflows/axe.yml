@@ -50,6 +50,10 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
+      - name: Build and overlay the personal website
+        run: |
+          python3 site/scripts/build.py --source .
+          python3 site/scripts/package.py --output _site
       - name: Get Chromium version 🌐
         # https://github.com/GoogleChromeLabs/chrome-for-testing?tab=readme-ov-file#other-api-endpoints
         run: |

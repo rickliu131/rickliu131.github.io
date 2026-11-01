@@ -6,6 +6,7 @@ on:
       - master
       - main
     paths:
+      - "site/**"
       - "assets/**"
       - "**.bib"
       - "**.html"
@@ -33,6 +34,7 @@ on:
       - master
       - main
     paths:
+      - "site/**"
       - "assets/**"
       - "**.bib"
       - "**.html"
@@ -88,6 +90,10 @@ jobs:
         run: |
           npm install -g purgecss
           purgecss -c purgecss.config.js
+      - name: Build and overlay the personal website
+        run: |
+          python3 site/scripts/build.py --source .
+          python3 site/scripts/package.py --output _site
       - name: Deploy 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4

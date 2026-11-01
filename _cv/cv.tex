@@ -1,0 +1,176 @@
+% Yuxuan Liu -- Curriculum Vitae
+% Build: tectonic cv.tex   (or: xelatex cv.tex)
+\documentclass[11pt,letterpaper]{article}
+
+% ---------------------------------------------------------------------------
+% Page and fonts
+% ---------------------------------------------------------------------------
+\usepackage[letterpaper,left=1.85in,right=0.95in,top=0.85in,bottom=0.95in,
+            footskip=0.45in]{geometry}
+\usepackage{libertinus}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{linkcolor}{HTML}{1F5FA8}
+\definecolor{footgray}{gray}{0.55}
+\hypersetup{colorlinks=true,urlcolor=linkcolor,linkcolor=linkcolor,
+            pdftitle={Yuxuan Liu -- Curriculum Vitae},pdfauthor={Yuxuan Liu}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.04}
+
+% Width of the hanging date / label column that sits in the left margin
+\newlength{\marginlabel}
+\setlength{\marginlabel}{0.85in}
+
+% ---------------------------------------------------------------------------
+% Footer: "Yuxuan Liu -- curriculum vitae, page N"
+% ---------------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[R]{\small\color{footgray}\textbf{Yuxuan Liu} --- \textit{curriculum vit\ae}, page \thepage}
+
+% ---------------------------------------------------------------------------
+% Section headings: large bold title over a full-width rule
+% ---------------------------------------------------------------------------
+\titleformat{\section}{\Large\bfseries}{}{0pt}{}[\vspace{-0.25ex}\titlerule]
+\titlespacing*{\section}{0pt}{2.6ex plus 0.6ex minus 0.3ex}{1.1ex}
+\titleformat{\subsection}{\large\mdseries}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{1.6ex plus 0.4ex}{0.6ex}
+
+% ---------------------------------------------------------------------------
+% Entry macros
+% ---------------------------------------------------------------------------
+% \entry{date}{body}: italic date hangs right-aligned in the margin column
+\newcommand{\entry}[2]{%
+  \par\noindent
+  \makebox[0pt][r]{\parbox[t]{\marginlabel}{\raggedleft\itshape #1}\hspace{0.75em}}%
+  \parbox[t]{\linewidth}{#2}\par\vspace{1.15ex}}
+
+% \pub{label}{body}: bold [C.1]-style label hangs in the margin column
+\newcommand{\pub}[2]{%
+  \par\noindent
+  \makebox[0pt][r]{\textbf{[#1]}\hspace{0.75em}}%
+  \parbox[t]{\linewidth}{#2}\par\vspace{1.0ex}}
+
+\newcommand{\me}{\textbf{Yuxuan Liu}}
+\newcommand{\venue}[1]{\textup{\textbf{#1}}}
+\newcommand{\award}[1]{\\\textbf{#1}}
+
+\begin{document}
+
+% ---------------------------------------------------------------------------
+% Header
+% ---------------------------------------------------------------------------
+{\fontsize{24}{28}\selectfont\textbf{Yuxuan Liu}}\hspace{0.6em}%
+{\fontsize{20}{24}\selectfont Curriculum Vit\ae}
+
+\vspace{1.4ex}
+\begin{minipage}[t]{0.55\linewidth}
+Computer Science and Engineering\\
+University of Michigan\\
+Ann Arbor, MI 48109 USA
+\end{minipage}%
+\begin{minipage}[t]{0.45\linewidth}
+\raggedleft
+\href{https://yuxuanliu.me}{https://yuxuanliu.me}\\
+\href{mailto:liurick@umich.edu}{liurick@umich.edu}
+\end{minipage}
+
+% ---------------------------------------------------------------------------
+\section{Research Interest}
+I study human--computer interaction (HCI) and accessibility. In particular, I am
+interested in developing systems and techniques that empower people with diverse
+access needs to engage fully with the digital world.
+
+% ---------------------------------------------------------------------------
+\section{Education}
+\entry{08/2025 --\\Present}{%
+  \textbf{University of Michigan, Ann Arbor}\\
+  Ph.D. in Computer Science and Engineering\\
+  Advisor: Anhong Guo}
+
+\entry{08/2022 --\\04/2025}{%
+  \textbf{University of Michigan, Ann Arbor}\\
+  B.S. in Computer Science, with Honors}
+
+% ---------------------------------------------------------------------------
+\section{Awards and Honors}
+\entry{2025}{\textbf{CSE First-Year Ph.D. Departmental Fellowship}, University of Michigan}
+\entry{2024}{\textbf{UIST 2024 Best Paper Award} [C.2]}
+\entry{2022 -- 2024}{\textbf{University Honors}, University of Michigan}
+
+% ---------------------------------------------------------------------------
+\section{Peer-Reviewed Conference Papers}
+\pub{C.3}{Chen Liang, \me, Martez Mott, Anhong Guo. HandProxy: Expanding the
+  Affordances of Speech Interfaces in Immersive Environments with a Virtual Proxy
+  Hand. In \textit{Proceedings of the ACM on Interactive, Mobile, Wearable and
+  Ubiquitous Technologies (\venue{IMWUT/UbiComp 2025})} 9.3: 107. Espoo, Finland.
+  2025.}
+
+\pub{C.2}{Ruei-Che Chang, \me, Anhong Guo. WorldScribe: Towards Context-Aware Live
+  Visual Descriptions. In \textit{Proceedings of the 37th Annual ACM Symposium on
+  User Interface Software \& Technology (\venue{UIST 2024})}. Pittsburgh, PA, USA.
+  2024. [Acceptance Rate: 24.0\%]
+  \award{Best Paper Award}}
+
+\pub{C.1}{Ruei-Che Chang, \me, Lotus Zhang, Anhong Guo. EditScribe: Non-Visual
+  Image Editing with Natural Language Verification Loops. In \textit{Proceedings of
+  the 26th International ACM SIGACCESS Conference on Computers and Accessibility
+  (\venue{ASSETS 2024})}. St.\ John's, Newfoundland and Labrador, Canada. 2024.
+  [Acceptance Rate: 30\%]}
+
+% ---------------------------------------------------------------------------
+\section{Demos}
+\pub{D.1}{\textit{(To Appear)} \me, Ruijie Zheng, Brandon Kim, Jason Wu, Anhong
+  Guo. Demonstration of General Accessibility Models: Learning Accessibility Needs
+  from Everyday Computer Use. In \textit{Adjunct Proceedings of the 39th Annual ACM
+  Symposium on User Interface Software \& Technology (\venue{UIST 2026 Demos})}.
+  Detroit, MI, USA. 2026.}
+
+% ---------------------------------------------------------------------------
+\section{Research Experience}
+\entry{04/2023 --\\05/2025}{%
+  \textbf{Human-AI Lab, University of Michigan}\\
+  Undergraduate Research Assistant}
+
+\entry{01/2023 --\\12/2023}{%
+  \textbf{University of Michigan Transportation Research Institute (UMTRI)}\\
+  Undergraduate Research Assistant\\
+  Co-led development of a driving simulator for human factors research}
+
+% ---------------------------------------------------------------------------
+\section{Talks}
+\entry{10/2026}{%
+  \textbf{Understanding Accessibility Needs through Computer Use}\\
+  \href{https://eecs.engin.umich.edu/event/personal-assistive-technology-a-human-ai-lab-research-showcase/}{UM CSE HCI Seminar Series}}
+
+% ---------------------------------------------------------------------------
+\section{Service}
+\textbf{Organizing}\par\nobreak
+\entry{06/2026}{\href{https://aadl.org/visions2026}{VISIONS 2026} Organizer}
+
+\textbf{Reviewer}\\
+CHI 2027\\
+CHI Late-Breaking Work 2025
+
+\vspace{1.1ex}
+\textbf{Student Volunteer}\\
+UIST 2027 Student Volunteer (Program Committee Meeting)
+
+% ---------------------------------------------------------------------------
+\section{Selected Press Coverage}
+\entry{10/2025}{\textbf{University of Michigan Engineering News.}
+  \href{https://news.engin.umich.edu/2025/10/this-digital-hand-enables-hands-free-virtual-reality/}{``This digital hand enables hands-free virtual reality''}}
+
+\vspace{4ex}
+\begin{center}\footnotesize Last updated: November 1, 2026\end{center}
+
+\end{document}

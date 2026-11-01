@@ -15,7 +15,7 @@ profile:
       <a href="mailto:liurick@umich.edu" class="profile-link" aria-label="Email" title="Email"><i class="fa-solid fa-envelope"></i></a>
     </div>
 
-news: false # includes a list of news items
+news: true # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---

@@ -1,0 +1,37 @@
+{
+  "biography": [
+    "I am a second-year PhD student at [Michigan CSE](https://cse.engin.umich.edu/), advised by Prof. [Anhong Guo](https://guoanhong.com/). I also work closely with Prof. [Jason Wu](https://jasonwunix.com/).",
+    "I study human–computer interaction (HCI) and accessibility. In particular, I am interested in developing systems and techniques that empower people with diverse access needs to engage fully with the digital world."
+  ],
+  "news": [
+    {
+      "date": "2026-10-30",
+      "text": "I'll be at UIST 2026 in Detroit, demoing [GAM](https://programs.sigchi.org/uist/2026/program/content/276221)!"
+    },
+    {
+      "date": "2025-08-26",
+      "text": "Starting my PhD journey at UM CSE!"
+    }
+  ],
+  "profile_links": [
+    {
+      "label": "liurick@umich.edu",
+      "href": "mailto:liurick@umich.edu"
+    },
+    {
+      "label": "X (Twitter)",
+      "href": "https://x.com/yuxuanliu21"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/yuxuanliu1/"
+    },
+    {
+      "label": "Google Scholar",
+      "href": "https://scholar.google.com/citations?user=BBdT2KYAAAAJ&hl=en"
+    }
+  ],
+  "publication_titles": {
+    "general_accessibility_models_demo": "General Accessibility Modeling (GAM): Understanding Accessibility Needs from Computer Use"
+  }
+}

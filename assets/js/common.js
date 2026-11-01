@@ -1,7 +1,8 @@
 $(document).ready(function () {
   // add toggle functionality to abstract, award and bibtex buttons
-  $("a.abstract").click(function () {
-    var abstractDiv = $(this).parent().parent().find(".abstract.hidden");
+  $("a.abstract, button.abstract").click(function () {
+    var targetId = $(this).attr("aria-controls");
+    var abstractDiv = targetId ? $(document.getElementById(targetId)) : $(this).parent().parent().find(".abstract.hidden");
     abstractDiv.toggleClass("open");
     var isOpen = abstractDiv.hasClass("open");
     abstractDiv.attr("aria-hidden", !isOpen);
