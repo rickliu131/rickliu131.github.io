@@ -68,7 +68,8 @@ try {
     for (const paper of content.publications) {
       const article = page.getByRole('article', { name: paper.title, exact: true });
       assert.equal(await article.count(), 1);
-      assert.equal(await article.locator('h3').textContent(), paper.title + ' (PDF)');
+      assert.equal(await article.locator('h3').textContent(), paper.title);
+      assert.equal(await article.locator('h3 a').getAttribute('aria-describedby'), 'pdf-format-description');
       assert.equal(await article.locator('.abstract-text').textContent(), paper.abstract);
       assert.equal(await article.locator('.venue').textContent(), paper.venue);
       assert.equal(await article.locator('.authors').textContent(), `${paper.authors.slice(0, -1).join(', ')}, and ${paper.authors.at(-1)}`);
@@ -214,11 +215,88 @@ try {
     assert.equal(await button.getAttribute('aria-label'),'Pause animation for WorldScribe');
     await page.keyboard.press('Space');assert.match(await image.getAttribute('src'), /poster\.png$/);
   });
-  await check('CV is labeled as PDF and the download opens successfully', async () => {
-    const link=page.getByRole('link',{name:'CV (PDF)',exact:true});
-    const response=await context.request.get(new URL(await link.getAttribute('href'),url).href);
-    assert.equal(response.status(),200);assert.equal((await response.body()).subarray(0,5).toString(),'%PDF-');
+  await check('CV navigation opens live HTML with a working original PDF download', async () => {
+    const link=page.getByRole('link',{name:'CV',exact:true});
+    const cvURL=new URL(await link.getAttribute('href'),url).href;
+    const cv=await context.newPage();
+    try {
+      const response=await cv.goto(cvURL);
+      assert.equal(response.status(),200);
+      assert.match(response.headers()['content-type'],/text\/html/);
+      assert.equal(await cv.getByRole('main').count(),1);
+      assert.equal(await cv.getByRole('heading',{level:1}).count(),1);
+      const pdf=await context.request.get(new URL('assets/documents/yuxuan-liu-cv.pdf',url).href);
+      assert.equal(pdf.status(),200);
+      assert.equal((await pdf.body()).subarray(0,5).toString(),'%PDF-');
+      assert.equal(await cv.locator('a[type="application/pdf"]').count(),1);
+    } finally { await cv.close(); }
   });
+  const cv = await context.newPage();
+  try {
+    await cv.goto(new URL('cv/', url).href, { waitUntil: 'networkidle' });
+    await cv.evaluate(() => document.fonts.ready);
+    await check('HTML CV headings, original text, and keyboard section navigation', async () => {
+      assert.equal(await cv.locator('h1').count(), 1);
+      assert.equal(await cv.locator('h2').count(), 9);
+      assert.equal(await cv.locator('h3').count(), 3);
+      assert.equal(await cv.getByRole('heading',{level:2,name:'Service',exact:true}).count(),1);
+      assert.equal(await cv.getByRole('heading',{level:3,name:'Reviewer',exact:true}).count(),1);
+      assert.equal(await cv.locator('main img, main canvas, iframe, object, embed').count(),0);
+      assert.ok((await cv.locator('main').textContent()).includes('UIST 2027 Student Volunteer (Program Committee Meeting)'));
+      await cv.keyboard.press('Tab');
+      assert.equal(await cv.locator(':focus').textContent(),'Skip to curriculum vitae');
+      await cv.keyboard.press('Enter');
+      assert.equal(await cv.locator(':focus').getAttribute('id'),'cv-content');
+      const summary=cv.locator('.cv-tools summary');
+      await summary.focus(); await cv.keyboard.press('Enter');
+      assert.ok(await cv.locator('.cv-tools details').getAttribute('open') !== null);
+      for (const id of await cv.locator('h2').evaluateAll(headings=>headings.map(h=>h.id))) {
+        const link=cv.locator(`.cv-tools a[href="#${id}"]`);
+        await link.focus(); await cv.keyboard.press('Enter');
+        assert.equal(await cv.locator(':focus').getAttribute('id'),id);
+      }
+      await summary.focus(); await cv.keyboard.press('Space');
+      assert.equal(await cv.locator('.cv-tools details').getAttribute('open'),null);
+    });
+    await check('HTML CV desktop WCAG scan and all local fonts load', async () => {
+      await cv.setViewportSize({width:1440,height:1100});
+      await axe(cv,'cv-desktop');
+      assert.ok(await cv.evaluate(()=>document.fonts.check('16px Libertinus')));
+      await cv.screenshot({path:new URL('cv-desktop.png',artifacts).pathname,fullPage:true});
+    });
+    await check('HTML CV narrow-screen and 200% text reflow with section menu open', async () => {
+      await cv.locator('.cv-tools details').evaluate(el=>{el.open=true;});
+      for (const width of [320,390,768,1440]) {
+        await cv.setViewportSize({width,height:1100}); await noOverflow(cv);
+      }
+      await cv.setViewportSize({width:1280,height:1100});
+      const style=await cv.addStyleTag({content:'html { font-size: 200% !important; }'});
+      try { await noOverflow(cv); } finally { await style.evaluate(el=>el.remove()); }
+      await cv.locator('.cv-tools details').evaluate(el=>{el.open=false;});
+    });
+    await check('HTML CV mobile WCAG scan and text-spacing reflow', async () => {
+      await cv.setViewportSize({width:390,height:844});
+      await axe(cv,'cv-mobile');
+      await cv.screenshot({path:new URL('cv-mobile.png',artifacts).pathname,fullPage:true});
+      const style=await cv.addStyleTag({content:'* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-bottom: 2em !important; }'});
+      try { await noOverflow(cv); } finally { await style.evaluate(el=>el.remove()); }
+    });
+    await check('HTML CV tab order, visible focus and no positive tabindex', async () => {
+      await cv.goto(new URL('cv/',url).href);
+      const count=await cv.locator('a[href]:visible,summary').count();
+      const visited=new Set();
+      for(let i=0;i<count;i++) {
+        await cv.keyboard.press('Tab');
+        const info=await cv.locator(':focus').evaluate(el=>({
+          index:[...document.querySelectorAll('a[href],summary')].indexOf(el),
+          outline:parseFloat(getComputedStyle(el).outlineWidth)
+        }));
+        assert.ok(info.index>=0);assert.ok(!visited.has(info.index));visited.add(info.index);
+        assert.ok(info.outline>=2);
+      }
+      assert.equal(await cv.locator('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])').count(),0);
+    });
+  } finally { await cv.close(); }
   await check('Forced colors keeps visible keyboard focus and readable icon backing', async () => {
     await page.emulateMedia({forcedColors:'active'});
     await page.getByRole('link',{name:'Google Scholar',exact:true}).focus();

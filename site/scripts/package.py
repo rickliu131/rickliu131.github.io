@@ -12,7 +12,8 @@ if not output.is_dir() or output == SITE or output == SITE.parent:
     raise SystemExit('Expected an existing Jekyll output directory.')
 for name in ('index.html', 'styles.css', 'motion.js'):
     shutil.copyfile(SITE / name, output / name)
-shutil.copytree(SITE / 'assets', output / 'assets', dirs_exist_ok=True)
+for directory in ('assets', 'cv'):
+    shutil.copytree(SITE / directory, output / directory, dirs_exist_ok=True)
 (output / 'CNAME').write_text('yuxuanliu.me\n')
 (output / '.nojekyll').touch()
 for section in ('publications', 'news'):

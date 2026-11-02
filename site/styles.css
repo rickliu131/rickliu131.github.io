@@ -46,7 +46,7 @@ h2 { font-size: 1.8rem; line-height: 1.35; letter-spacing: -.04em; margin-bottom
 .publications h2 { margin-bottom: 12px; }
 .paper { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 32px; padding-block: 26px; border-bottom: 1px solid var(--rule); }
 .publication-list > li:last-child .paper { border-bottom: 0; }
-.paper-figure { align-self: start; margin-top: 2px; }
+.paper-figure { position: relative; width: fit-content; align-self: start; margin-top: 2px; }
 .figure-link { display: block; width: 208px; max-width: 100%; }
 .paper-image { width: 208px; height: 139px; object-fit: contain; padding: 6px; background: #fff; border: 1px solid var(--rule); border-radius: 5px; }
 .paper-copy { min-width: 0; }
@@ -127,10 +127,15 @@ summary:hover .summary-text { text-decoration: underline; text-underline-offset:
 .profile-links a { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 10px; text-decoration: none; }
 .profile-links svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .paper-image-fill { padding: 0; border: 0; object-fit: cover; }
-.motion-toggle { color: var(--link); background: transparent; border: 0; padding: 6px 0; min-height: 32px; font: .75rem/1.5 var(--sans); cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
+.motion-toggle { position: absolute; right: 6px; bottom: 6px; display: grid; place-items: center; width: 32px; height: 32px; padding: 7px; border: 1px solid #fff; border-radius: 50%; background: #242d2b; color: #fff; cursor: pointer; }
+.motion-toggle svg { display: block; width: 16px; height: 16px; fill: currentColor; }
+.motion-toggle .motion-pause { display: none; }
+.motion-toggle[data-playing="true"] .motion-play { display: none; }
+.motion-toggle[data-playing="true"] .motion-pause { display: block; }
+.motion-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 7px var(--link); }
 .motion-toggle[hidden] { display: none; }
 button:focus-visible { outline: 3px solid var(--link); outline-offset: 5px; }
-@media (max-width: 640px) { .motion-toggle { min-height: 44px; } }
+@media (max-width: 640px) { .motion-toggle { width: 36px; height: 36px; } }
 @media print { .motion-toggle { display: none; } }
 
 /* Original brand silhouettes on the page background, without icon tiles. */

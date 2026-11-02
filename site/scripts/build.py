@@ -175,7 +175,7 @@ def paper_html(paper, name):
     title = escape(paper["title"])
     primary_link = paper["resources"][0]["href"]
     primary_type = ' type="application/pdf"' if paper["resources"][0]["label"] in ("Paper", "Demo Abstract") else ""
-    primary_hint = '<span class="sr-only"> (PDF)</span>' if primary_type else ""
+    primary_hint = ' aria-describedby="pdf-format-description"' if primary_type else ""
     resources = []
     for link in paper["resources"]:
         media_type = ' type="application/pdf"' if link['label'] in ('Paper', 'Demo Abstract') else ''
@@ -190,7 +190,12 @@ def paper_html(paper, name):
     if paper['id'] == 'worldscribe':
         motion = f' data-animation="{escape(image_src)}" data-poster="assets/images/worldscribe-poster.png" id="worldscribe-animation"'
         image_src = 'assets/images/worldscribe-poster.png'
-        control = '<button class="motion-toggle" type="button" aria-controls="worldscribe-animation" hidden>Play animation</button>'
+        control = ('<button class="motion-toggle" type="button" aria-controls="worldscribe-animation" '
+                   'aria-label="Play animation for WorldScribe" title="Play animation" hidden>'
+                   '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+                   '<path class="motion-play" d="m8 5 11 7-11 7Z"/>'
+                   '<path class="motion-pause" d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
+                   '</svg></button>')
     return f'''
         <li>
           <article class="paper" aria-label="{title}">
@@ -201,7 +206,7 @@ def paper_html(paper, name):
               {control}
             </figure>
             <div class="paper-copy">
-              <h3 id="{paper['id']}-title"><a href="{escape(primary_link)}"{primary_type}>{title}{primary_hint}</a></h3>
+              <h3 id="{paper['id']}-title"><a href="{escape(primary_link)}"{primary_type}{primary_hint}>{title}</a></h3>
               <p class="authors">{author_text}</p>
               <p class="venue">{escape(paper['venue'])}</p>
               {award}
@@ -251,7 +256,7 @@ def render(content):
     <header class="site-header">
       <a class="site-name" href="#about">{name}</a>
       <nav aria-label="Main navigation">
-        <ul role="list"><li><a href="#about">About</a></li><li><a href="#news">News</a></li><li><a href="#publications">Publications</a></li><li><a href="{escape(content['cv'])}" type="application/pdf" aria-label="CV (PDF)">CV</a></li></ul>
+        <ul role="list"><li><a href="#about">About</a></li><li><a href="#news">News</a></li><li><a href="#publications">Publications</a></li><li><a href="cv/">CV</a></li></ul>
       </nav>
     </header>
     <main id="main" tabindex="-1">
@@ -274,6 +279,7 @@ def render(content):
         <ol class="publication-list" role="list">{papers}</ol>
       </section>
     </main>
+    <span id="pdf-format-description" hidden>PDF document</span>
     <footer class="site-footer"><p>© 2026 {name}</p></footer>
   </div>
 </body>
@@ -285,7 +291,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE, help="Original Jekyll checkout (read-only).")
     args = parser.parse_args()
-    content = source_content(args.source.resolve())
+    from build_cv import build_cv
+
+    source = args.source.resolve()
+    content = source_content(source)
+    build_cv(source)
     (ROOT / "content.json").write_text(json.dumps(content, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (ROOT / "index.html").write_text("\n".join(line.rstrip() for line in render(content).splitlines()) + "\n", encoding="utf-8")
     print(f"Built static preview with {len(content['news'])} news items and {len(content['publications'])} publications.")

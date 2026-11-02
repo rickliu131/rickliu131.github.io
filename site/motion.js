@@ -7,8 +7,10 @@ if (image && toggle) {
     playing = value;
     image.src = playing ? image.dataset.animation : image.dataset.poster;
     image.closest('a').href = image.src;
-    toggle.textContent = playing ? 'Pause animation' : 'Play animation';
-    toggle.setAttribute('aria-label', `${toggle.textContent} for WorldScribe`);
+    const action = playing ? 'Pause animation' : 'Play animation';
+    toggle.dataset.playing = String(playing);
+    toggle.setAttribute('aria-label', `${action} for WorldScribe`);
+    toggle.title = action;
   }
   toggle.hidden = false;
   setPlaying(!preference.matches);
