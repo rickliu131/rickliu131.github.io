@@ -98,7 +98,7 @@ def build_cv(source: Path):
     minipages = re.findall(r'\\begin\{minipage\}\[t\]\{[^}]+\}(.*?)\\end\{minipage\}',header,re.S)
     if len(minipages) != 2: raise ValueError('Unexpected CV contact header')
     affiliation = inline(minipages[0]); contact = inline(minipages[1].replace(r'\raggedleft',''))
-    rendered, toc = [], []
+    rendered = []
     for i, section in enumerate(sections):
         title = section[1]
         slug = re.sub(r'[^a-z0-9]+','-',title.lower()).strip('-')
@@ -113,7 +113,6 @@ def build_cv(source: Path):
             section_body = '\n'.join(content)
         else: section_body = blocks(text)
         rendered.append((title,f'<section class="cv-section" aria-labelledby="{slug}"><h2 id="{slug}" tabindex="-1">{html.escape(title)}</h2>{section_body}</section>'))
-        toc.append(f'<li><a href="#{slug}">{html.escape(title)}</a></li>')
     first = '\n'.join(markup for title, markup in rendered[:5])
     second = '\n'.join(markup for title, markup in rendered[5:])
     footer = lambda page: f'<p class="page-footer" aria-hidden="true"><strong>{html.escape(name)}</strong> — <em>curriculum vitæ</em>, page {page}</p>'
@@ -128,7 +127,6 @@ def build_cv(source: Path):
 </head>
 <body>
 <a class="skip-link" href="#cv-content">Skip to curriculum vitae</a>
-<nav class="cv-tools" aria-label="CV navigation"><a href="../">Back to website</a><a href="../assets/documents/yuxuan-liu-cv.pdf" type="application/pdf">Download PDF</a><details><summary>Jump to section</summary><ul role="list">{''.join(toc)}</ul></details></nav>
 <main id="cv-content" tabindex="-1" aria-labelledby="cv-title">
 <div class="cv-page" data-page="1">
 <header class="cv-header"><h1 id="cv-title"><strong>{html.escape(name)}</strong><span>Curriculum Vitæ</span></h1>

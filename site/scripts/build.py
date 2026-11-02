@@ -186,24 +186,16 @@ def paper_html(paper, name):
     fill = " paper-image-fill" if paper['id'] in ('handproxy', 'worldscribe') else ""
     image_src = paper['image']['src']
     motion = ""
-    control = ""
     if paper['id'] == 'worldscribe':
         motion = f' data-animation="{escape(image_src)}" data-poster="assets/images/worldscribe-poster.png" id="worldscribe-animation"'
         image_src = 'assets/images/worldscribe-poster.png'
-        control = ('<button class="motion-toggle" type="button" aria-controls="worldscribe-animation" '
-                   'aria-label="Play animation for WorldScribe" title="Play animation" hidden>'
-                   '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
-                   '<path class="motion-play" d="m8 5 11 7-11 7Z"/>'
-                   '<path class="motion-pause" d="M6 5h4v14H6zM14 5h4v14h-4z"/>'
-                   '</svg></button>')
     return f'''
         <li>
           <article class="paper" aria-label="{title}">
             <figure class="paper-figure">
-              <a class="figure-link" href="{escape(paper['image']['src'])}" aria-label="View full figure for {title}">
+              <a class="figure-link" href="{escape(image_src)}" aria-label="View full figure for {title}">
                 <img class="paper-image{fill}" src="{escape(image_src)}"{motion} alt="{escape(paper['image']['alt'])}" width="208" height="139" loading="lazy" decoding="async">
               </a>
-              {control}
             </figure>
             <div class="paper-copy">
               <h3 id="{paper['id']}-title"><a href="{escape(primary_link)}"{primary_type}{primary_hint}>{title}</a></h3>

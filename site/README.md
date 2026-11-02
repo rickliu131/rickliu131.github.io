@@ -9,11 +9,12 @@ From the repository root, run `python3 site/scripts/build.py --source .` to rebu
 - Biography, news, social links, and publication title overrides: `site/content-overrides.json`.
 - Publications and abstracts: `_bibliography/papers.bib`.
 - Layout: `site/scripts/build.py` and `site/styles.css`.
-- CV: edit `_cv/cv.tex`, run `tectonic cv.tex` in `_cv`, then rebuild the site. `scripts/build_cv.py` generates the HTML version at `/cv/` from the same source; the original PDF remains available there. `cv/cv.css` preserves the original two-page desktop layout and reflows it on smaller screens. The converter rejects unsupported LaTeX commands so content is never silently dropped.
+- CV: edit `_cv/cv.tex`, run `tectonic cv.tex` in `_cv`, then rebuild the site. `scripts/build_cv.py` generates the HTML version at `/cv/` from the same source. It reads as a continuous webpage, without a toolbar, paper frame, or on-screen page numbers. `cv/cv.css` preserves the document typography and two-page print layout and reflows on smaller screens. The original PDF remains at `/assets/documents/yuxuan-liu-cv.pdf`. The converter rejects unsupported LaTeX commands so content is never silently dropped.
 - GAM’s supplied demo PDF: `site/assets/papers/gam-uist-2026.pdf`.
+- Typography: the original system sans-serif body and Georgia headings, with their original weights and a 6.25% larger on-screen type scale (17px body at the browser's default 16px setting). The homepage uses a white, near-black, and blue palette. News and publication links show underlines on hover or keyboard focus. The HTML CV keeps its original Libertinus typography and layout.
 - Official icon sources: `site/assets/icons/SOURCES.md`.
 
-The static HTML works without JavaScript. `motion.js` adds the WorldScribe animation, keyboard pause/play, and reduced-motion support. PDF links have explicit format hints for screen readers. The favicon preserves the original ☰ symbol.
+The static HTML works without JavaScript. `motion.js` adds automatic WorldScribe looping and reduced-motion support. Without JavaScript or with reduced motion enabled, the image and its full-figure link use the static poster. PDF links have explicit format hints for screen readers. The favicon preserves the original ☰ symbol.
 
 ## Deployment
 

@@ -174,6 +174,10 @@ try {
       const noJS = await noJSContext.newPage();
       await noJS.goto(url);
       assert.equal(await noJS.getByRole('heading', { level: 1 }).textContent(), content.name);
+      const staticFigure = noJS.locator('#worldscribe-animation');
+      assert.match(await staticFigure.getAttribute('src'), /poster\.png$/);
+      assert.match(await staticFigure.locator('..').getAttribute('href'), /poster\.png$/);
+      assert.equal(await noJS.locator('.motion-toggle').count(), 0);
       await noJS.getByRole('navigation').getByRole('link', { name: 'Publications', exact: true }).focus();
       await noJS.keyboard.press('Enter');
       assert.equal(await noJS.locator(':focus').getAttribute('id'), 'publications');
@@ -205,17 +209,23 @@ try {
     assert.ok(await page.locator(':focus').count());
     assert.equal(await page.locator('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])').count(),0);
   });
-  await check('Animation supports keyboard pause and honors reduced motion, including full figure', async () => {
+  await check('Animation autoplays without a button and honors reduced-motion changes', async () => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto(url);
-    const image=page.locator('#worldscribe-animation'), button=page.locator('.motion-toggle');
-    assert.match(await image.getAttribute('src'), /poster\.png$/);
-    assert.match(await image.locator('..').getAttribute('href'), /poster\.png$/);
-    await button.focus(); await page.keyboard.press('Enter');
+    const image=page.locator('#worldscribe-animation');
+    assert.equal(await page.locator('.motion-toggle').count(), 0);
     assert.match(await image.getAttribute('src'), /webp$/);
-    assert.equal(await button.getAttribute('aria-label'),'Pause animation for WorldScribe');
-    await page.keyboard.press('Space');assert.match(await image.getAttribute('src'), /poster\.png$/);
+    assert.match(await image.locator('..').getAttribute('href'), /webp$/);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForFunction(() => document.querySelector('#worldscribe-animation').src.endsWith('poster.png'));
+    assert.match(await image.locator('..').getAttribute('href'), /poster\.png$/);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.waitForFunction(() => document.querySelector('#worldscribe-animation').src.endsWith('.webp'));
+    assert.match(await image.locator('..').getAttribute('href'), /webp$/);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForFunction(() => document.querySelector('#worldscribe-animation').src.endsWith('poster.png'));
   });
-  await check('CV navigation opens live HTML with a working original PDF download', async () => {
+  await check('CV navigation opens live HTML and the original PDF URL stays available', async () => {
     const link=page.getByRole('link',{name:'CV',exact:true});
     const cvURL=new URL(await link.getAttribute('href'),url).href;
     const cv=await context.newPage();
@@ -227,36 +237,61 @@ try {
       assert.equal(await cv.getByRole('heading',{level:1}).count(),1);
       const pdf=await context.request.get(new URL('assets/documents/yuxuan-liu-cv.pdf',url).href);
       assert.equal(pdf.status(),200);
-      assert.equal((await pdf.body()).subarray(0,5).toString(),'%PDF-');
-      assert.equal(await cv.locator('a[type="application/pdf"]').count(),1);
+      const pdfBytes=await pdf.body();
+      assert.equal(pdfBytes.subarray(0,5).toString(),'%PDF-');
+      assert.equal(digest(pdfBytes),digest(await readFile(new URL('../_cv/cv.pdf',variant))));
     } finally { await cv.close(); }
   });
   const cv = await context.newPage();
   try {
     await cv.goto(new URL('cv/', url).href, { waitUntil: 'networkidle' });
     await cv.evaluate(() => document.fonts.ready);
-    await check('HTML CV headings, original text, and keyboard section navigation', async () => {
+    await check('HTML CV source headings, links, original text and keyboard skip link', async () => {
+      const sourceTex=(await readFile(new URL('../_cv/cv.tex',variant),'utf8')).replace(/(?<!\\)%[^\n]*/g,'');
+      const sourceHeadings=[...sourceTex.matchAll(/\\section\{([^}]+)\}/g)].map(match=>match[1]);
+      const sourceLinks=[...sourceTex.matchAll(/\\href\{([^}]+)\}/g)].map(match=>match[1]);
       assert.equal(await cv.locator('h1').count(), 1);
       assert.equal(await cv.locator('h2').count(), 9);
       assert.equal(await cv.locator('h3').count(), 3);
+      assert.deepEqual(await cv.locator('h2').allTextContents(),sourceHeadings);
+      assert.deepEqual(await cv.locator('main a[href]').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),sourceLinks);
       assert.equal(await cv.getByRole('heading',{level:2,name:'Service',exact:true}).count(),1);
+      assert.equal(await cv.getByRole('heading',{level:2,name:'Press Coverage',exact:true}).getAttribute('id'),'press-coverage');
       assert.equal(await cv.getByRole('heading',{level:3,name:'Reviewer',exact:true}).count(),1);
       assert.equal(await cv.locator('main img, main canvas, iframe, object, embed').count(),0);
       assert.ok((await cv.locator('main').textContent()).includes('UIST 2027 Student Volunteer (Program Committee Meeting)'));
+      assert.ok(!(await cv.locator('main').textContent()).includes('(To Appear)'));
+      const awardText=await cv.locator('.cv-section[aria-labelledby="awards-and-honors"]').textContent();
+      assert.ok(awardText.includes('CSE Departmental Fellowship'));
+      assert.ok(!awardText.includes('CSE First-Year Ph.D. Departmental Fellowship'));
+      for(const section of await cv.locator('.cv-section').all()) {
+        assert.equal(await section.getAttribute('aria-labelledby'),await section.locator('h2').getAttribute('id'));
+      }
       await cv.keyboard.press('Tab');
       assert.equal(await cv.locator(':focus').textContent(),'Skip to curriculum vitae');
       await cv.keyboard.press('Enter');
       assert.equal(await cv.locator(':focus').getAttribute('id'),'cv-content');
-      const summary=cv.locator('.cv-tools summary');
-      await summary.focus(); await cv.keyboard.press('Enter');
-      assert.ok(await cv.locator('.cv-tools details').getAttribute('open') !== null);
-      for (const id of await cv.locator('h2').evaluateAll(headings=>headings.map(h=>h.id))) {
-        const link=cv.locator(`.cv-tools a[href="#${id}"]`);
-        await link.focus(); await cv.keyboard.press('Enter');
-        assert.equal(await cv.locator(':focus').getAttribute('id'),id);
+      await cv.keyboard.press('Tab');
+      assert.ok(await cv.locator('main a').first().evaluate(el=>el===document.activeElement));
+    });
+    await check('HTML CV is a continuous webpage without toolbar or paper surfaces', async () => {
+      assert.equal(await cv.locator('.cv-tools, nav, button, details, summary').count(),0);
+      assert.equal(await cv.getByRole('link',{name:'Back to website',exact:true}).count(),0);
+      assert.equal(await cv.getByRole('link',{name:'Download PDF',exact:true}).count(),0);
+      for(const width of [390,1440]) {
+        await cv.setViewportSize({width,height:1100});
+        assert.equal(await cv.locator('.page-footer:visible').count(),0);
+        const surfaceStyles=await cv.locator('.cv-page').evaluateAll(pages=>pages.map(page=>({
+          shadow:getComputedStyle(page).boxShadow,
+          minimumHeight:getComputedStyle(page).minHeight
+        })));
+        assert.equal(surfaceStyles.length,2);
+        assert.ok(surfaceStyles.every(style=>style.shadow==='none' && style.minimumHeight==='0px'),JSON.stringify(surfaceStyles));
+        const gaps=await cv.locator('.cv-section').evaluateAll(sections=>sections.slice(1).map((section,index)=>
+          section.getBoundingClientRect().top-sections[index].getBoundingClientRect().bottom));
+        assert.equal(gaps.length,8);
+        assert.ok(gaps.every(gap=>gap>=0 && gap<=48),JSON.stringify({width,gaps}));
       }
-      await summary.focus(); await cv.keyboard.press('Space');
-      assert.equal(await cv.locator('.cv-tools details').getAttribute('open'),null);
     });
     await check('HTML CV desktop WCAG scan and all local fonts load', async () => {
       await cv.setViewportSize({width:1440,height:1100});
@@ -264,15 +299,13 @@ try {
       assert.ok(await cv.evaluate(()=>document.fonts.check('16px Libertinus')));
       await cv.screenshot({path:new URL('cv-desktop.png',artifacts).pathname,fullPage:true});
     });
-    await check('HTML CV narrow-screen and 200% text reflow with section menu open', async () => {
-      await cv.locator('.cv-tools details').evaluate(el=>{el.open=true;});
+    await check('HTML CV narrow-screen and 200% text reflow', async () => {
       for (const width of [320,390,768,1440]) {
         await cv.setViewportSize({width,height:1100}); await noOverflow(cv);
       }
       await cv.setViewportSize({width:1280,height:1100});
       const style=await cv.addStyleTag({content:'html { font-size: 200% !important; }'});
       try { await noOverflow(cv); } finally { await style.evaluate(el=>el.remove()); }
-      await cv.locator('.cv-tools details').evaluate(el=>{el.open=false;});
     });
     await check('HTML CV mobile WCAG scan and text-spacing reflow', async () => {
       await cv.setViewportSize({width:390,height:844});
