@@ -36,7 +36,8 @@ def yaml_value(text, key, default=""):
     value = match.group(1).strip()
     if value.startswith(('"', "'")) and value[-1:] == value[0]:
         return value[1:-1]
-    return value.split(" #", 1)[0].strip()
+    value = value.split(" #", 1)[0].strip()
+    return default if value.lower() in ("null", "~", "") else value
 
 
 def inline_markdown(text):
